@@ -1,5 +1,17 @@
 const express = require('express');
+const mongoose = require('mongoose');
+
+const dotenv = require('dotenv');
+const result = dotenv.config();
+
 const app = express();
+
+mongoose
+  .connect(
+    `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@${process.env.ATLAS_CLUSTER_URL}/${process.env.ATLAS_DB_NAME}?retryWrites=true&w=majority`
+  )
+  .then(() => console.log('Connexion à MongoDB réussie !'))
+  .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -11,7 +23,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/api/books', (req, res) => {
+app.get('/api/books', (req, res) => {
   const book = [
     {
       userId: '1',
@@ -23,9 +35,7 @@ app.use('/api/books', (req, res) => {
     }
   ];
 
-res.status(200).json(book);
-
+  res.status(200).json(book);
 });
 
 module.exports = app;
-
