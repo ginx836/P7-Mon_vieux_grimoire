@@ -1,6 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
+const bookRoutes = require('./routes/book');
+const userRoutes = require('./routes/user');
+
 const dotenv = require('dotenv');
 const result = dotenv.config();
 
@@ -23,19 +26,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/api/books', (req, res) => {
-  const book = [
-    {
-      userId: '1',
-      title: 'Harry Potter and the Chamber of Secrets',
-      author: 'J.K. Rowling',
-      imageUrl: 'https://m.media-amazon.com/images/I/81gOJoEgVoL._SL1500_.jpg',
-      year: 1998,
-      genre: 'Fantasy'
-    }
-  ];
+app.use(express.json());
 
-  res.status(200).json(book);
-});
+app.use('/api/books', bookRoutes);
+app.use('/api/auth', userRoutes);
+
 
 module.exports = app;
