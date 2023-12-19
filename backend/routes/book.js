@@ -1,19 +1,15 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  const book = [
-    {
-      userId: '1',
-      title: 'Harry Potter and the Chamber of Secrets',
-      author: 'J.K. Rowling',
-      imageUrl: 'https://m.media-amazon.com/images/I/81gOJoEgVoL._SL1500_.jpg',
-      year: 1998,
-      genre: 'Fantasy'
-    }
-  ];
+const auth = require('../middleware/auth');
+const multer = require('../middleware/multer-config');
 
-  res.status(200).json(book);
-});
+const bookCtrl = require('../controllers/book');
+
+router.post('/', auth, multer, bookCtrl.createBook);
+router.get('/:id', bookCtrl.getOneBook);
+router.get('/', bookCtrl.getAllBooks);
+router.put('/:id', auth, multer, bookCtrl.modifyBook);
+router.delete('/:id', auth, bookCtrl.deleteBook);
 
 module.exports = router;
