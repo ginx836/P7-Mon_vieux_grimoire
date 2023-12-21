@@ -53,9 +53,16 @@ exports.modifyBook = (req, res, next) => {
       if (book.userId != req.auth.userId) {
         res.status(401).json({ message: 'Not authorized' });
       } else {
-        Book.updateOne({ _id: req.params.id }, { ...bookObject, _id: req.params.id })
-          .then(() => res.status(200).json({ message: 'Objet modifié!' }))
-          .catch((error) => res.status(401).json({ error }));
+        const oldImagePath = book.imageUrl.split('/images/')[1];
+        fs.unlink(`images/${oldImagePath}`, (err) => {
+          if (err) {
+            console.log(err);
+            return res.status(500).json({ error: err });
+          }
+          Book.updateOne({ _id: req.params.id }, { ...bookObject, _id: req.params.id })
+            .then(() => res.status(200).json({ message: 'Objet modifié!' }))
+            .catch((error) => res.status(401).json({ error }));
+        });
       }
     })
     .catch((error) => {
