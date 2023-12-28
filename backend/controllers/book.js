@@ -95,14 +95,14 @@ exports.rateBook = (req, res, next) => {
   };
   //Vérifie que la note est bien comprise entre 0 et 5
   if (updatedRating.grade < 0 || updatedRating.grade > 5) {
-    return res.status(400).json({ message: 'rating must be between 0 and 5' });
+    return res.status(400).json({ message: 'La note doit être en 0 et 5' });
   }
   //Récupère le livre à noter
   Book.findOne({ _id: req.params.id })
     .then((book) => {
       //Vérifie que l'utilisateur n'a pas déjà noté le livre
       if (book.ratings.find((r) => r.userId === req.auth.userId)) {
-        return res.status(400).json({ message: 'User already voted for this book' });
+        return res.status(400).json({ message: 'Cet utilisateur a déjà voté' });
       } else {
         //Ajoute la note à la liste des notes
         book.ratings.push(updatedRating);
@@ -112,7 +112,7 @@ exports.rateBook = (req, res, next) => {
         //Si on ajoute une 4ème note, la moyenne devient (note1 + note2 + note3 + note4) / 4
         book.averageRating = (book.averageRating * (book.ratings.length - 1) + updatedRating.grade) / book.ratings.length;
         // Arrondir vers l'entier inférieur 
-        book.averageRating = Math.floor(book.averageRating);
+        book.averageRating = Math.floor(book.averageRating * 2) / 2;
         return book.save();
       }
       next();

@@ -12,7 +12,10 @@ const convertAndResizeImage = async (req, res, next) => {
       const newFilename = createNewFilename(req.file.filename);
       const newImagePath = path.join('images', newFilename);
 
-      await sharp(req.file.path).resize({ height: 300 }).webp({ quality: 80 }).toFile(newImagePath);
+      await sharp(req.file.path)
+      .resize({ height: 400, fit: 'contain' })
+      .webp({ quality: 80 })
+      .toFile(newImagePath);
 
       // Supprime l'image originale
       await fs.unlink(req.file.path);
