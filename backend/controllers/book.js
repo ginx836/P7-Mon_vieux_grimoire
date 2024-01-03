@@ -48,6 +48,7 @@ exports.modifyBook = (req, res, next) => {
     : { ...req.body };
 
   delete bookObject._userId;
+
   Book.findOne({ _id: req.params.id })
     .then((book) => {
       if (book.userId != req.auth.userId) {
@@ -112,7 +113,7 @@ exports.rateBook = (req, res, next) => {
         //Si on ajoute une 4ème note, la moyenne devient (note1 + note2 + note3 + note4) / 4
         book.averageRating = (book.averageRating * (book.ratings.length - 1) + updatedRating.grade) / book.ratings.length;
         // Arrondir vers l'entier inférieur 
-        book.averageRating = Math.floor(book.averageRating * 2) / 2;
+        book.averageRating = Math.round(book.averageRating * 2) / 2;
         return book.save();
       }
       next();

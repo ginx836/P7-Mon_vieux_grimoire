@@ -1,6 +1,6 @@
 const multer = require('multer');
 
-// Pour générer des noms de fichiers aléatoires
+// Pour générer des noms de fichiers aléatoires uniques
 const {v4: uuidv4} = require('uuid');
 
 const MIME_TYPES = {
