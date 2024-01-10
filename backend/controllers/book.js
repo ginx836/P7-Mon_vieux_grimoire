@@ -1,13 +1,13 @@
 const Book = require('../models/Book');
 const fs = require('fs');
 
-exports.getAllBooks = (req, res, next) => {
+exports.getAllBooks = (req, res) => {
   Book.find()
     .then((books) => res.status(200).json(books))
     .catch((error) => res.status(400).json({ error }));
 };
 
-exports.getOneBook = (req, res, next) => {
+exports.getOneBook = (req, res) => {
   Book.findOne({
     _id: req.params.id
   })
@@ -19,7 +19,7 @@ exports.getOneBook = (req, res, next) => {
     });
 };
 
-exports.createBook = (req, res, next) => {
+exports.createBook = (req, res) => {
   const bookObject = JSON.parse(req.body.book);
   delete bookObject._id;
   delete bookObject._userId;
@@ -39,7 +39,7 @@ exports.createBook = (req, res, next) => {
     });
 };
 
-exports.modifyBook = (req, res, next) => {
+exports.modifyBook = (req, res) => {
   const bookObject = req.file
     ? {
         ...JSON.parse(req.body.book),
@@ -86,7 +86,7 @@ exports.modifyBook = (req, res, next) => {
     });
 };
 
-exports.deleteBook = (req, res, next) => {
+exports.deleteBook = (req, res) => {
   Book.findOne({ _id: req.params.id })
     .then((book) => {
       if (book.userId != req.auth.userId) {
@@ -103,7 +103,7 @@ exports.deleteBook = (req, res, next) => {
     .catch((error) => res.status(500).json({ error }));
 };
 
-exports.rateBook = (req, res, next) => {
+exports.rateBook = (req, res) => {
   const updatedRating = {
     userId: req.auth.userId,
     grade: req.body.rating
@@ -128,16 +128,16 @@ exports.rateBook = (req, res, next) => {
         book.averageRating = (book.averageRating * (book.ratings.length - 1) + updatedRating.grade) / book.ratings.length;
         // Arrondir vers l'entier inférieur
         book.averageRating = Math.round(book.averageRating * 2) / 2;
-        return book.save();
+        book.save();
+        res.status(201).json(book);
+  
       }
-      next();
     })
-    .then((updatedBook) => res.status(201).json(updatedBook))
     .catch((error) => res.status(400).json({ error }));
 };
 
 //Ajoute une fonction pour récupérer les 3 meilleurs livres par leur note moyenne
-exports.getBestBooks = (req, res, next) => {
+exports.getBestBooks = (req, res) => {
   Book.find()
     .sort({ averageRating: -1 })
     .limit(3)
