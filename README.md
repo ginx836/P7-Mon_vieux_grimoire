@@ -6,6 +6,10 @@ Projet n°7 du parcours Développeur Web d'OpenClassrooms
 
 Développer le back-end du site "Mon vieux Grimoire" en utilisant Node.js, Express et MongoDB.
 
+## Screenshots
+
+![Capture d'écran](/Grimoire-Cover.webp)
+
 ## Prérequis
 
 Vous devez avoir Node.js et npm installés localement sur votre machine.</br>
